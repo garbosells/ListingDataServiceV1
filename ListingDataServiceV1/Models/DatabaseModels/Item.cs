@@ -151,7 +151,7 @@ namespace ListingDataServiceV1.Models.DatabaseModels
         /// </summary>
         public long eraId { get; set; }
         //An Item has has 1 or 0 measurement
-        public ItemMeasurement measurement { get; set; }
+        public List<ItemMeasurement> measurements { get; set; }
         //An Item has n attributes
         public List<ItemAttribute> attributes { get; set; }
         

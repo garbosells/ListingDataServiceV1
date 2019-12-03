@@ -29,8 +29,8 @@ namespace ListingDataServiceV1.Data
 
             modelBuilder.Entity<ItemMeasurement>()
                .HasOne(im => im.Item)
-               .WithOne(item => item.measurement)
-               .HasForeignKey<ItemMeasurement>(im=>im.ItemId)
+               .WithMany(item => item.measurements)
+               .HasForeignKey(im=>im.ItemId)
                .HasConstraintName("ForeignKey_ItemMeasurement_Item");
             
             modelBuilder.Entity<ItemAttribute>()

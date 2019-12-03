@@ -18,10 +18,7 @@ namespace ListingDataServiceV1.Controllers
             _dbListing.ItemId = l.ListingId;
             _dbListing.Item = new Models.DatabaseModels.Item();
             _dbListing.Item.attributes = MapWebAttributes(l.Item.attributes, l.Item.generalItemAttributes);
-            _dbListing.Item.measurement = new Models.DatabaseModels.ItemMeasurement();
-            _dbListing.Item.measurement.categoryMeasurementId = l.Item.measurement.categoryMeasurementId;
-            _dbListing.Item.measurement.itemMeasurementId = l.Item.measurement.itemMeasurementId;
-            _dbListing.Item.measurement.itemMeasurementValue = l.Item.measurement.itemMeasurementValue;
+            _dbListing.Item.measurements = MapWebMeasurements(l.Item.measurements);
             _dbListing.Item.ItemId = l.ListingId;
             _dbListing.Item.Listing = _dbListing;
             _dbListing.Item.ListingId = l.Item.id;
@@ -63,13 +60,7 @@ namespace ListingDataServiceV1.Controllers
                 _webListing.Item.updatedDateTime = l.Item.updatedDateTime;
                 _webListing.Item.shortDescription = l.Item.ShortDescription;
                 _webListing.Item.longDescription = l.Item.LongDescription;
-                if (l.Item.measurement != null)
-                {
-                    _webListing.Item.measurement = new Models.WebModels.ItemMeasurement();
-                    _webListing.Item.measurement.categoryMeasurementId = l.Item.measurement.categoryMeasurementId;
-                    _webListing.Item.measurement.itemMeasurementId = l.Item.measurement.itemMeasurementId;
-                    _webListing.Item.measurement.itemMeasurementValue = l.Item.measurement.itemMeasurementValue;
-                }
+                _webListing.Item.measurements = MapDBMeasurements(l.Item.measurements);
                 _webListing.Item.size = new ItemSize();
                 _webListing.Item.size.sizeTypeId = l.Item.sizeTypeId;
                 _webListing.Item.size.sizeValueId = l.Item.sizeValueId;
@@ -164,6 +155,36 @@ namespace ListingDataServiceV1.Controllers
                 dbAttrs.Add(dbattr);
             }     
             return dbAttrs;
+        }
+
+        private static List<Models.DatabaseModels.ItemMeasurement> MapWebMeasurements(List<Models.WebModels.ItemMeasurement> wMeas)
+        {
+            List<Models.DatabaseModels.ItemMeasurement> dbMeas = new List<Models.DatabaseModels.ItemMeasurement>();
+            Models.DatabaseModels.ItemMeasurement dbMea = new Models.DatabaseModels.ItemMeasurement();
+            foreach (Models.WebModels.ItemMeasurement im in wMeas)
+            {
+                dbMea.categoryMeasurementId = im.categoryMeasurementId;
+                dbMea.itemMeasurementId = im.itemMeasurementId;
+                dbMea.itemMeasurementValue = im.itemMeasurementValue;
+                dbMea.Item = _dbListing.Item;
+                dbMea.ItemId = _dbListing.Item.ItemId;
+                dbMeas.Add(dbMea);
+            }
+            return dbMeas;
+        }
+
+        private static List<Models.WebModels.ItemMeasurement> MapDBMeasurements(List<Models.DatabaseModels.ItemMeasurement> dbMeas)
+        {
+            List<Models.WebModels.ItemMeasurement> webMeas = new List<Models.WebModels.ItemMeasurement>();
+            Models.WebModels.ItemMeasurement webMea = new Models.WebModels.ItemMeasurement();
+            foreach (Models.DatabaseModels.ItemMeasurement im in dbMeas)
+            {
+                webMea.categoryMeasurementId = im.categoryMeasurementId;
+                webMea.itemMeasurementId = im.itemMeasurementId;
+                webMea.itemMeasurementValue = im.itemMeasurementValue;
+                webMeas.Add(webMea);
+            }
+            return webMeas;
         }
     }
 }

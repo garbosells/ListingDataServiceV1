@@ -27,8 +27,11 @@ namespace ListingDataServiceV1.Models.Services
                 var itemAttributes = from ia in _context.ItemAttributes
                                      where ia.ItemId == l.ListingId
                                      select ia;
-                l.Item.measurement = await _context.ItemMeasurements.FindAsync(l.ListingId);
+                var itemMeasurements = from im in _context.ItemMeasurements
+                                     where im.ItemId == l.ListingId
+                                     select im;
                 l.Item.attributes = itemAttributes.ToList();
+                l.Item.measurements = itemMeasurements.ToList();
             }
             return listings;
         }
@@ -40,10 +43,12 @@ namespace ListingDataServiceV1.Models.Services
             var itemAttributes = from ia in _context.ItemAttributes
                                  where ia.ItemId == id
                                  select ia;
-            var itemMeasurement = await _context.ItemMeasurements.FindAsync(id);
+            var itemMeasurements = from im in _context.ItemMeasurements
+                                   where im.ItemId == id
+                                   select im;
             listing.Item = item;
             listing.Item.attributes = itemAttributes.ToList();
-            listing.Item.measurement = itemMeasurement;
+            listing.Item.measurements = itemMeasurements.ToList();
             return listing;
         }
 
@@ -55,7 +60,10 @@ namespace ListingDataServiceV1.Models.Services
             {
                 _context.ItemAttributes.Add(ia);
             }
-            _context.ItemMeasurements.Add(newListing.Item.measurement);
+            foreach (DatabaseModels.ItemMeasurement im in newListing.Item.measurements)
+            {
+                _context.ItemMeasurements.Add(im);
+            }
             await _context.SaveChangesAsync();
             return "success";
         }
@@ -68,7 +76,10 @@ namespace ListingDataServiceV1.Models.Services
             {
                 _context.Entry(ia).State = EntityState.Modified;
             }
-            _context.Entry(listing.Item.measurement).State = EntityState.Modified;
+            foreach (DatabaseModels.ItemMeasurement im in listing.Item.measurements)
+            {
+                _context.Entry(im).State = EntityState.Modified;
+            }
             try
             {
                 await _context.SaveChangesAsync();
@@ -87,14 +98,19 @@ namespace ListingDataServiceV1.Models.Services
             var attrs = from ia in _context.ItemAttributes
                                  where ia.ItemId == id
                                  select ia;
-            var meas = await _context.ItemMeasurements.FindAsync(id);
+            var meas = from im in _context.ItemMeasurements
+                       where im.ItemId == id
+                       select im;
             _context.Entry(dlist).State = EntityState.Deleted;
             _context.Entry(ditem).State = EntityState.Deleted;
             foreach(DatabaseModels.ItemAttribute ia in attrs)
             {
                 _context.Entry(ia).State = EntityState.Deleted;
             }
-            if(meas!=null)_context.Entry(meas).State = EntityState.Deleted;
+            foreach (DatabaseModels.ItemMeasurement im in meas)
+            {
+                _context.Entry(im).State = EntityState.Deleted;
+            }
             try
             {
                 await _context.SaveChangesAsync();

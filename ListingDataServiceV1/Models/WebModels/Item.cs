@@ -111,7 +111,7 @@ namespace ListingDataServiceV1.Models.WebModels
          * @modifywhen The measurements are modified on an existing item.
          * @modifiedby The user.
          */
-        public ItemMeasurement measurement { get; set; }
+        public List<ItemMeasurement> measurements { get; set; }
         /**
          * The size of the item. See ItemSize for details.
          *
