@@ -88,7 +88,7 @@ namespace ListingDataServiceV1.Models.Services
             {
                 return "error";
             }
-            return "sucess";
+            return "success";
         }
 
         public async Task<string> DeleteListingAsync(long id)
