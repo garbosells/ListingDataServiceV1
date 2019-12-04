@@ -21,7 +21,7 @@ namespace ListingDataServiceV1.Controllers
             _listingService = listingService;
         }
 
-        [HttpGet("GetListing/id")]
+        [HttpGet("GetListing")]
         public async Task<Listing> GetAsync(long id)
         {
             
